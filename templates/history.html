@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Expense History</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    background:#f5f7fa;
+    margin:0;
+}
+
+.navbar{
+    background:#141e30;
+    color:white;
+    padding:20px;
+}
+
+.container{
+    width:90%;
+    margin:auto;
+    margin-top:30px;
+}
+
+.record{
+    background:white;
+    margin-bottom:20px;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.btn{
+    padding:10px 20px;
+    background:#141e30;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    text-decoration:none;
+}
+
+.details{
+    display:none;
+    margin-top:20px;
+    border-top:1px solid #ddd;
+    padding-top:20px;
+}
+
+.summary{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+}
+
+.left{
+    width:45%;
+}
+
+.right{
+    width:45%;
+}
+
+p{
+    margin:8px 0;
+}
+
+.dark{
+    background:#111827;
+    color:white;
+}
+
+.dark .record{
+    background:#222;
+    color:white;
+}
+
+.dark .navbar{
+    background:#000;
+}
+
+.dark .details{
+    border-top:1px solid #444;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<h2>📊 Expense History</h2>
+
+</div>
+
+<div class="container">
+
+<br>
+
+<a href="/dashboard" class="btn">
+← Back to Dashboard
+</a>
+
+<br><br>
+
+{% for expense in expenses %}
+
+<div class="record">
+
+    <div class="top">
+
+        <div>
+
+            <h3>{{ expense.date }}</h3>
+
+            <p>
+                Total Expense:
+                ₹{{ expense.total }}
+            </p>
+
+        </div>
+
+        <button
+            class="btn"
+            onclick="toggleDetails({{ expense.id }})">
+
+            View Details
+
+        </button>
+
+    </div>
+
+    <div
+        class="details"
+        id="details-{{ expense.id }}">
+
+        <div class="summary">
+
+            <div class="left">
+
+                <p><b>Food:</b> ₹{{ expense.food }}</p>
+
+                <p><b>Travel:</b> ₹{{ expense.travel }}</p>
+
+                <p><b>Shopping:</b> ₹{{ expense.shopping }}</p>
+
+                <p><b>Bills:</b> ₹{{ expense.bills }}</p>
+
+                <p><b>Entertainment:</b> ₹{{ expense.entertainment }}</p>
+
+                <p><b>Health:</b> ₹{{ expense.health }}</p>
+
+                <p><b>Education:</b> ₹{{ expense.education }}</p>
+
+                <hr>
+
+                <p>
+                    <b>Total:</b>
+                    ₹{{ expense.total }}
+                </p>
+
+                <p>
+                    <b>Average:</b>
+                    ₹{{ (expense.total / 7)|round(2) }}
+                </p>
+
+            </div>
+
+            <div class="right">
+
+                <h3>
+                    Donut Chart
+                    (Coming Next)
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<script>
+
+function toggleDetails(id){
+
+    let details =
+        document.getElementById(
+            "details-" + id
+        );
+
+    if(details.style.display === "block"){
+
+        details.style.display = "none";
+
+    }
+
+    else{
+
+        details.style.display = "block";
+
+    }
+}
+
+</script>
+
+<script>
+
+window.onload = function(){
+
+    let theme = localStorage.getItem("theme");
+
+    if(theme === "dark"){
+        document.body.classList.add("dark");
+    }
+}
+
+</script>
+
+</body>
+
+</html>
