@@ -22,31 +22,6 @@ A Flask-based web application for tracking expenses, analyzing spending habits, 
 - Jinja2
 - Matplotlib
 
-## Screenshots
-
-### Landing Page
-
-![Landing Page](screenshots/landing-page.png)
-
-### Login Page
-
-![Login Page](screenshots/login-page.png)
-
-### Dashboard
-
-![Dashboard](screenshots/dashboard.png)
-
-### Expense Entry Form
-
-![Expense Form](screenshots/expense-form.png)
-
-### Expense Analytics
-
-![Expense Analytics](screenshots/expense-chart.png)
-
-## Demo Video
-
-https://drive.google.com/file/d/1272G1wA4FeBl1BIKD3yIRb8Da_MT5ZpQ/view?usp=drive_link
 
 ## Project Structure
 
