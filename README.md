@@ -23,7 +23,7 @@ No pie charts. No complex analytics. Just a clean, empathy-driven interface that
 **1. Clone the repository**
 ```bash
 git clone [https://github.com/thakurtrishit2005-art/Expense-Tracker.git]
-cd pocketrunway
+cd Expense-Tracker
 ```
 
 **2. Create a Virtual Environment (Recommended)**
