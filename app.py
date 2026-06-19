@@ -227,6 +227,20 @@ def history():
     transactions = Expense.query.filter_by(user_id=current_user.id).order_by(Expense.date.desc()).all()
     return render_template("history.html", expenses=transactions)
 
+@app.route("/delete_expense/<int:expense_id>", methods=["POST"])
+@login_required
+def delete_expense(expense_id):
+    expense = Expense.query.get_or_404(expense_id)
+    
+    # Ensure users can only delete their own transactions
+    if expense.user_id == current_user.id:
+        db.session.delete(expense)
+        db.session.commit()
+        flash("Transaction deleted.", "success")
+        
+    # Redirect back to the page they were just on (Dashboard or History)
+    return redirect(request.referrer or url_for('dashboard'))
+
 # -----------------------------#
 # RUN APP
 # -----------------------------#

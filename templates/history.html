@@ -100,10 +100,17 @@
             {% if expenses %}
                 <ul class="space-y-2.5">
                     {% for t in expenses %}
-                    <li class="relative overflow-hidden rounded-3xl">
-                        <div class="relative flex items-center gap-3 bg-[var(--card)] p-4 shadow-card">
-                            
-                            <!-- Emoji Logic -->
+                    <li class="swipe-item relative overflow-hidden rounded-3xl bg-expense">
+                        <div class="absolute inset-y-0 right-0 flex w-20 items-center justify-center">
+                            <form action="{{ url_for('delete_expense', expense_id=t.id) }}" method="POST" class="w-full h-full m-0 p-0">
+                                <button type="submit" class="w-full h-full flex items-center justify-center text-xs font-bold uppercase tracking-wide text-white hover:bg-black/20 transition">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="swipe-card relative z-10 flex items-center gap-3 bg-[var(--card)] p-4 shadow-card w-full touch-pan-y">
+        
                             <div class="flex h-11 w-11 flex-none items-center justify-center rounded-2xl bg-secondary text-xl">
                                 {% if t.transaction_type == 'income' %}💸
                                 {% elif t.category == 'Food/Zomato' %}🍔
@@ -113,11 +120,9 @@
                                 {% else %}✨{% endif %}
                             </div>
 
-                            <div class="min-w-0 flex-1">
+                            <div class="min-w-0 flex-1 pointer-events-none">
                                 <div class="flex flex-wrap items-center gap-1.5">
                                     <span class="truncate text-sm font-semibold text-foreground">{{ t.category }}</span>
-                                    
-                                    <!-- Badges -->
                                     {% if t.transaction_type != 'income' %}
                                         {% if t.payment_method == 'UPI' %}
                                             <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-badge-upi text-badge-upi-foreground">UPI</span>
@@ -129,14 +134,13 @@
                                         {% endif %}
                                     {% endif %}
                                 </div>
-                                <p class="mt-0.5 text-xs text-muted-foreground">{{ t.date.strftime('%d %b %Y, %I:%M %p') }}</p>
+                                <p class="mt-0.5 text-xs text-muted-foreground">{{ t.date.strftime('%d %b, %I:%M %p') }}</p>
                                 {% if t.notes %}
                                     <p class="mt-1 text-xs italic text-muted-foreground">{{ t.notes }}</p>
                                 {% endif %}
                             </div>
 
-                            <!-- Amount -->
-                            <div class="text-right text-base font-bold {% if t.transaction_type == 'income' %}text-safe{% else %}text-expense{% endif %}">
+                            <div class="text-right text-base font-bold pointer-events-none {% if t.transaction_type == 'income' %}text-safe{% else %}text-expense{% endif %}">
                                 {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₹{{ t.amount }}
                             </div>
                         </div>
@@ -163,6 +167,42 @@
         }
         updateTimeTheme();
         setInterval(updateTimeTheme, 60000);
+    </script>
+    <script>
+        document.querySelectorAll('.swipe-item').forEach(item => {
+            const card = item.querySelector('.swipe-card');
+            let startX = null;
+            let currentX = 0;
+
+            card.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+                card.style.transition = 'none';
+            }, {passive: true});
+
+            card.addEventListener('touchmove', e => {
+                if (startX === null) return;
+                const dx = e.touches[0].clientX - startX;
+                if (dx < 0) { 
+                    // Swiping left
+                    currentX = Math.max(dx, -80);
+                    card.style.transform = `translateX(${currentX}px)`;
+                } else if (currentX < 0 && dx > 0) { 
+                    // Swiping right to close it
+                    card.style.transform = `translateX(${Math.min(currentX + dx, 0)}px)`;
+                }
+            }, {passive: true});
+
+            card.addEventListener('touchend', e => {
+                startX = null;
+                card.style.transition = 'transform 200ms ease';
+                if (currentX < -40) {
+                    currentX = -80; // Snap open
+                } else {
+                    currentX = 0;   // Snap closed
+                }
+                card.style.transform = `translateX(${currentX}px)`;
+            });
+        });
     </script>
 </body>
 </html>
