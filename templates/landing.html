@@ -1,65 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
-<title>Expense Tracker</title>
-
-<style>
-
-body{
-    margin:0;
-    font-family:Arial;
-    background:#f4f4f4;
-}
-
-.hero{
-    text-align:center;
-    padding:120px;
-}
-
-h1{
-    font-size:60px;
-}
-
-p{
-    font-size:22px;
-    color:gray;
-}
-
-.btn{
-    text-decoration:none;
-    padding:15px 30px;
-    margin:10px;
-    background:black;
-    color:white;
-    border-radius:10px;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Welcome to PocketRunway</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        background: 'var(--background)', foreground: 'var(--foreground)',
+                        card: 'var(--card)', secondary: 'var(--secondary)',
+                        hero: { DEFAULT: 'var(--hero)', foreground: 'var(--hero-foreground)' },
+                    },
+                    boxShadow: { card: '0 10px 30px -12px rgba(0,0,0,0.18)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --secondary: oklch(0.968 0.007 247.896); --border: oklch(0.929 0.013 255.508); }
+        html[data-time="morning"] { --background: oklch(0.985 0.012 85); --foreground: oklch(0.18 0.03 260); --hero: oklch(0.74 0.16 55); --hero-foreground: oklch(0.99 0.01 90); --card: oklch(1 0 0 / 0.82); }
+        html[data-time="afternoon"] { --background: oklch(0.955 0.018 80); --foreground: oklch(0.18 0.03 260); --hero: oklch(0.55 0.09 250); --hero-foreground: oklch(0.985 0.008 240); --card: oklch(1 0 0 / 0.82); }
+        html[data-time="evening"] { --background: oklch(0.96 0.018 35); --foreground: oklch(0.18 0.03 260); --hero: oklch(0.5 0.14 320); --hero-foreground: oklch(0.985 0.008 320); --card: oklch(1 0 0 / 0.82); }
+        html[data-time="night"] { --background: oklch(0.21 0.03 270); --foreground: oklch(0.96 0.01 95); --hero: oklch(0.22 0.06 265); --hero-foreground: oklch(0.97 0.012 90); --card: oklch(0.27 0.03 270 / 0.82); --secondary: oklch(0.32 0.03 270); }
+        body { background-color: var(--background); color: var(--foreground); transition: background-color 600ms ease, color 600ms ease; }
+        .grain-overlay { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); background-size: 200px 200px; opacity: 0.05; mix-blend-mode: multiply; }
+        html[data-time="night"] .grain-overlay { opacity: 0.08; mix-blend-mode: overlay; }
+    </style>
 </head>
+<body class="relative min-h-screen flex flex-col items-center justify-center antialiased p-4">
+    <div aria-hidden="true" class="grain-overlay pointer-events-none fixed inset-0 z-0"></div>
+    
+    <div class="relative z-10 w-full max-w-sm text-center space-y-8">
+        <div class="space-y-3">
+            <div class="mx-auto w-16 h-16 rounded-3xl bg-hero text-hero-foreground flex items-center justify-center text-3xl shadow-card mb-6">
+                ✈️
+            </div>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-foreground/60">PocketRunway</p>
+            <h1 class="text-4xl font-extrabold tracking-tight text-foreground">Stretch your allowance.</h1>
+            <p class="text-foreground/80 font-medium leading-relaxed">Know exactly how much you can safely spend today to survive the month.</p>
+        </div>
 
-<body>
+        <div class="space-y-3 pt-4">
+            <a href="{{ url_for('register') }}" class="flex h-14 w-full items-center justify-center rounded-2xl bg-hero text-base font-semibold text-hero-foreground hover:opacity-90 transition shadow-lg">
+                Get Started
+            </a>
+            <a href="{{ url_for('login') }}" class="flex h-14 w-full items-center justify-center rounded-2xl bg-[var(--card)] text-base font-semibold text-foreground hover:bg-secondary transition shadow-sm border border-[var(--border)]">
+                I already have an account
+            </a>
+        </div>
+    </div>
 
-<div class="hero">
-
-<h1>💰 Expense Tracker</h1>
-
-<p>
-Track expenses, analyze spending and build better financial habits.
-</p>
-
-<br>
-
-<a href="/login" class="btn">
-Login
-</a>
-
-<a href="/register" class="btn">
-Register
-</a>
-
-</div>
-
+    <script>
+        function updateTimeTheme() {
+            const h = new Date().getHours();
+            let tod = 'night';
+            if (h >= 6 && h < 12) tod = 'morning';
+            else if (h >= 12 && h < 17) tod = 'afternoon';
+            else if (h >= 17 && h < 20) tod = 'evening';
+            document.documentElement.setAttribute('data-time', tod);
+        }
+        updateTimeTheme();
+    </script>
 </body>
 </html>

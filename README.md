@@ -1,132 +1,49 @@
-# 💰 Expense Tracker Pro
+# ✈️ PocketRunway (V2)
 
-A modern Flask-based Expense Tracker Web Application that helps users manage daily expenses, visualize spending patterns, and monitor financial habits through interactive charts and analytics.
+**PocketRunway** is not an accountant's spreadsheet. It is a financial companion for college students on a fixed monthly allowance. It tells you exactly how much you can spend *today* to survive the month.
 
----
+No pie charts. No complex analytics. Just a clean, empathy-driven interface that shifts from morning to night to keep you on track.
 
-## 🚀 Features
-
-- 🔐 User Registration & Login System
-- 📊 Expense Dashboard
-- 💵 Category-wise Expense Tracking
-- 📈 Average Expense Calculation
-- 🥧 Expense Distribution Pie Chart
-- 🌙 Dark Mode Support
-- 📜 Expense History Page
-- 🎨 Modern Responsive UI
-
----
+## ✨ V2 Features
+* **The "Safe Today" Engine:** A smart rolling-average algorithm that calculates your daily allowance. If you overspend today, it gracefully reduces your budget for tomorrow.
+* **Time-of-Day Theming:** The UI dynamically shifts colors and greetings based on your local time (Morning, Afternoon, Evening, Night) inspired by cozy slice-of-life aesthetics.
+* **Tactile UI:** Features a subtle film-grain overlay and OKLCH color palettes to shed the generic "SaaS boilerplate" look.
+* **Income & Refunds:** Easily add mid-month top-ups or log IOU settlements without breaking your expense math.
+* **5-Day Streaks:** Visual habit-building to show you how well you've stuck to your budget this week.
 
 ## 🛠️ Tech Stack
+* **Backend:** Python, Flask, Flask-Login
+* **Database:** SQLite (via Flask-SQLAlchemy)
+* **Frontend:** HTML5, standard JavaScript, and Tailwind CSS (via CDN for zero-build-step rapid prototyping)
 
-- Python
-- Flask
-- HTML5
-- CSS3
-- Jinja2 Templates
-- Matplotlib
+## 🚀 Quick Start Guide (For Beginners)
 
----
+**⚠️ Important:** This application strictly requires **Python 3.12**. Please ensure you have this version installed before proceeding.
 
-## 📸 Screenshots
-
-### Landing Page
-
-![Landing Page](screenshots/landing-page.png)
-
----
-
-### Login Page
-
-![Login Page](screenshots/login-page.png)
-
----
-
-### Dashboard
-
-![Dashboard](screenshots/dashboard.png)
-
----
-
-### Expense Form
-
-![Expense Form](screenshots/expense-form.png)
-
----
-
-### Expense Analytics
-
-![Analytics](screenshots/expense-chart.png)
-
----
-
-## 🎥 Project Demo Video
-
-▶️ Watch Demo:
-
-https://drive.google.com/file/d/1272G1wA4FeBl1BIKD3yIRb8Da_MT5ZpQ/view?usp=drive_link
-
----
-
-## 📂 Project Structure
-
-```text
-Expense-Tracker/
-│
-├── templates/
-│   ├── landing.html
-│   ├── login.html
-│   ├── register.html
-│   ├── index.html
-│   └── history.html
-│
-├── static/
-│
-├── app.py
-├── requirements.txt
-├── README.md
-└── .gitignore
-```
-
----
-
-## ⚙️ Installation
-
-Clone the repository:
-
+**1. Clone the repository**
 ```bash
-git clone https://github.com/thakurtrishit2005-art/Expense-Tracker.git
+git clone [https://github.com/thakurtrishit2005-art/pocketrunway.git]
+cd pocketrunway
 ```
 
-Move into project folder:
-
+**2. Create a Virtual Environment (Recommended)**
 ```bash
-cd Expense-Tracker
+python -m venv venv
+# On Windows: venv\Scripts\activate
+# On Mac/Linux: source venv/bin/activate
 ```
 
-Install dependencies:
-
+**3. Install Dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-Run the application:
-
+**4. Run the Application**
 ```bash
 python app.py
 ```
+*The app will automatically create a fresh SQLite database for you. Open your browser and go to `http://127.0.0.1:5000`.*
+
 
 ---
-
-## 📊 Functionalities
-
-- Register new account
-- Secure login system
-- Add expenses in multiple categories
-- Calculate total expenses
-- Calculate average spending
-- Visualize expense distribution
-- View expense history
-- Dark mode interface
-
----
+*Designed to stretch the month.*

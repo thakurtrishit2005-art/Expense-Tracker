@@ -1,112 +1,84 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-
-<title>Login</title>
-
-<style>
-
-body{
-    font-family: Arial;
-    background: linear-gradient(to right,#141e30,#243b55);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.box{
-    background:white;
-    padding:40px;
-    width:350px;
-    border-radius:20px;
-    box-shadow:0px 0px 20px rgba(0,0,0,0.3);
-}
-
-h1{
-    text-align:center;
-    margin-bottom:25px;
-}
-
-input{
-    width:100%;
-    padding:12px;
-    margin-bottom:15px;
-    border-radius:8px;
-    border:1px solid #ccc;
-}
-
-button{
-    width:100%;
-    padding:12px;
-    background:#141e30;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-a{
-    display:block;
-    text-align:center;
-    margin-top:15px;
-    text-decoration:none;
-}
-
-.success{
-    background:#d4edda;
-    color:#155724;
-    padding:10px;
-    border-radius:8px;
-    margin-bottom:15px;
-    text-align:center;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - PocketRunway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: { background: 'var(--background)', foreground: 'var(--foreground)', card: 'var(--card)', secondary: 'var(--secondary)', hero: { DEFAULT: 'var(--hero)', foreground: 'var(--hero-foreground)' } },
+                    boxShadow: { card: '0 10px 30px -12px rgba(0,0,0,0.18)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --secondary: oklch(0.968 0.007 247.896); --border: oklch(0.929 0.013 255.508); }
+        html[data-time="morning"] { --background: oklch(0.985 0.012 85); --foreground: oklch(0.18 0.03 260); --hero: oklch(0.74 0.16 55); --hero-foreground: oklch(0.99 0.01 90); --card: oklch(1 0 0 / 0.82); }
+        html[data-time="afternoon"] { --background: oklch(0.955 0.018 80); --foreground: oklch(0.18 0.03 260); --hero: oklch(0.55 0.09 250); --hero-foreground: oklch(0.985 0.008 240); --card: oklch(1 0 0 / 0.82); }
+        html[data-time="evening"] { --background: oklch(0.96 0.018 35); --foreground: oklch(0.18 0.03 260); --hero: oklch(0.5 0.14 320); --hero-foreground: oklch(0.985 0.008 320); --card: oklch(1 0 0 / 0.82); }
+        html[data-time="night"] { --background: oklch(0.21 0.03 270); --foreground: oklch(0.96 0.01 95); --hero: oklch(0.22 0.06 265); --hero-foreground: oklch(0.97 0.012 90); --card: oklch(0.27 0.03 270 / 0.82); --secondary: oklch(0.32 0.03 270); }
+        body { background-color: var(--background); color: var(--foreground); transition: background-color 600ms ease, color 600ms ease; }
+        .grain-overlay { background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); background-size: 200px 200px; opacity: 0.05; mix-blend-mode: multiply; }
+        html[data-time="night"] .grain-overlay { opacity: 0.08; mix-blend-mode: overlay; }
+    </style>
 </head>
+<body class="relative min-h-screen flex flex-col items-center justify-center antialiased p-4">
+    <div aria-hidden="true" class="grain-overlay pointer-events-none fixed inset-0 z-0"></div>
+    
+    <div class="relative z-10 w-full max-w-sm">
+        <a href="{{ url_for('landing') }}" class="text-sm font-semibold text-foreground/60 hover:text-foreground mb-6 inline-block">← Back</a>
+        
+        <div class="bg-[var(--card)] p-8 rounded-3xl shadow-card border border-[var(--border)]">
+            <h2 class="text-2xl font-extrabold tracking-tight mb-2">Welcome back</h2>
+            <p class="text-sm text-foreground/60 mb-6">Log in to check your runway.</p>
 
-<body>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="mb-4 p-3 rounded-xl text-sm font-semibold text-center {% if category == 'success' %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
 
-<div class="box">
+            <form action="{{ url_for('login') }}" method="POST" class="space-y-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-foreground/60">Username</label>
+                    <input type="text" name="username" required class="w-full h-12 rounded-2xl bg-secondary/50 px-4 font-medium focus:outline-none border-2 border-transparent focus:border-hero text-foreground">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-semibold uppercase tracking-wider text-foreground/60">Password</label>
+                    <input type="password" name="password" required class="w-full h-12 rounded-2xl bg-secondary/50 px-4 font-medium focus:outline-none border-2 border-transparent focus:border-hero text-foreground">
+                </div>
+                
+                <button type="submit" class="w-full h-14 rounded-2xl bg-hero text-hero-foreground font-bold hover:opacity-90 transition mt-2">
+                    Log In
+                </button>
+            </form>
+            
+            <p class="text-center text-sm font-medium text-foreground/60 mt-6">
+                Don't have an account? <a href="{{ url_for('register') }}" class="text-hero font-bold hover:underline">Sign up</a>
+            </p>
+        </div>
+    </div>
 
-<h1>🔐 Login</h1>
-
-{% with messages = get_flashed_messages() %}
-{% if messages %}
-<div class="success">
-{{ messages[0] }}
-</div>
-{% endif %}
-{% endwith %}
-
-<form method="POST">
-
-<input
-type="text"
-name="username"
-placeholder="Username"
-required>
-
-<input
-type="password"
-name="password"
-placeholder="Password"
-required>
-
-<button type="submit">
-Login
-</button>
-
-</form>
-
-<a href="/register">
-Create Account
-</a>
-
-</div>
-
+    <script>
+        function updateTimeTheme() {
+            const h = new Date().getHours();
+            let tod = 'night';
+            if (h >= 6 && h < 12) tod = 'morning';
+            else if (h >= 12 && h < 17) tod = 'afternoon';
+            else if (h >= 17 && h < 20) tod = 'evening';
+            document.documentElement.setAttribute('data-time', tod);
+        }
+        updateTimeTheme();
+    </script>
 </body>
-
 </html>

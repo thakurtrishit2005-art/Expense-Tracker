@@ -1,238 +1,168 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>History — PocketRunway</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (CDN for rapid prototyping) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+                    colors: {
+                        background: 'var(--background)',
+                        foreground: 'var(--foreground)',
+                        card: 'var(--card)',
+                        secondary: 'var(--secondary)',
+                        muted: { DEFAULT: 'var(--muted)', foreground: 'var(--muted-foreground)' },
+                        hero: { DEFAULT: 'var(--hero)', foreground: 'var(--hero-foreground)', muted: 'var(--hero-muted)' },
+                        safe: 'var(--safe)',
+                        expense: 'var(--expense)',
+                        badge: {
+                            upi: { DEFAULT: 'var(--badge-upi)', foreground: 'var(--badge-upi-foreground)' },
+                            cash: { DEFAULT: 'var(--badge-cash)', foreground: 'var(--badge-cash-foreground)' },
+                            shared: { DEFAULT: 'var(--badge-shared)', foreground: 'var(--badge-shared-foreground)' }
+                        }
+                    },
+                    boxShadow: { card: '0 10px 30px -12px rgba(0,0,0,0.18)' },
+                    borderRadius: { '2xl': '1rem', '3xl': '1.25rem' }
+                }
+            }
+        }
+    </script>
 
-<title>Expense History</title>
+    <!-- Core Styles (Inherited from V2) -->
+    <style>
+        :root {
+            --badge-upi: oklch(0.92 0.05 245); --badge-upi-foreground: oklch(0.35 0.15 250);
+            --badge-cash: oklch(0.92 0.07 150); --badge-cash-foreground: oklch(0.32 0.12 155);
+            --badge-shared: oklch(0.92 0.07 60); --badge-shared-foreground: oklch(0.42 0.15 50);
+            --safe: oklch(0.78 0.19 150); --expense: oklch(0.65 0.2 25);
+            --secondary: oklch(0.968 0.007 247.896); --border: oklch(0.929 0.013 255.508);
+        }
 
-<style>
+        /* Horimiya Time-of-Day Engine */
+        html[data-time="morning"] {
+            --background: oklch(0.985 0.012 85); --foreground: oklch(0.18 0.03 260);
+            --card: oklch(1 0 0 / 0.82); --muted: oklch(0.96 0.01 80); --muted-foreground: oklch(0.55 0.04 250);
+        }
+        html[data-time="afternoon"] {
+            --background: oklch(0.955 0.018 80); --foreground: oklch(0.18 0.03 260);
+            --card: oklch(1 0 0 / 0.82); --muted: oklch(0.96 0.01 80); --muted-foreground: oklch(0.55 0.04 250);
+        }
+        html[data-time="evening"] {
+            --background: oklch(0.96 0.018 35); --foreground: oklch(0.18 0.03 260);
+            --card: oklch(1 0 0 / 0.82); --muted: oklch(0.96 0.01 80); --muted-foreground: oklch(0.55 0.04 250);
+        }
+        html[data-time="night"] {
+            --background: oklch(0.21 0.03 270); --foreground: oklch(0.96 0.01 95);
+            --card: oklch(0.27 0.03 270 / 0.82); --secondary: oklch(0.32 0.03 270);
+            --muted: oklch(0.32 0.03 270); --muted-foreground: oklch(0.78 0.02 260);
+        }
 
-body{
-    font-family:Arial;
-    background:#f5f7fa;
-    margin:0;
-}
+        body {
+            background-color: var(--background); color: var(--foreground);
+            transition: background-color 600ms ease, color 600ms ease;
+        }
 
-.navbar{
-    background:#141e30;
-    color:white;
-    padding:20px;
-}
-
-.container{
-    width:90%;
-    margin:auto;
-    margin-top:30px;
-}
-
-.record{
-    background:white;
-    margin-bottom:20px;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
-
-.top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.btn{
-    padding:10px 20px;
-    background:#141e30;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    text-decoration:none;
-}
-
-.details{
-    display:none;
-    margin-top:20px;
-    border-top:1px solid #ddd;
-    padding-top:20px;
-}
-
-.summary{
-    display:flex;
-    justify-content:space-between;
-    flex-wrap:wrap;
-}
-
-.left{
-    width:45%;
-}
-
-.right{
-    width:45%;
-}
-
-p{
-    margin:8px 0;
-}
-
-.dark{
-    background:#111827;
-    color:white;
-}
-
-.dark .record{
-    background:#222;
-    color:white;
-}
-
-.dark .navbar{
-    background:#000;
-}
-
-.dark .details{
-    border-top:1px solid #444;
-}
-
-</style>
-
+        .grain-overlay {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+            background-size: 200px 200px; opacity: 0.05; mix-blend-mode: multiply;
+        }
+        html[data-time="night"] .grain-overlay { opacity: 0.08; mix-blend-mode: overlay; }
+    </style>
 </head>
+<body class="relative min-h-screen pb-16 antialiased">
 
-<body>
+    <!-- The Tactile Grain -->
+    <div aria-hidden="true" class="grain-overlay pointer-events-none fixed inset-0 z-0"></div>
 
-<div class="navbar">
+    <div class="relative z-10 mx-auto w-full max-w-xl space-y-6 px-4 pt-8 sm:pt-12">
+        
+        <!-- Header -->
+        <header class="px-1 flex items-center justify-between">
+            <div>
+                <a href="{{ url_for('dashboard') }}" class="inline-flex items-center text-sm font-semibold text-muted-foreground hover:text-foreground transition mb-2">
+                    ← Back to Dashboard
+                </a>
+                <h1 class="text-2xl font-extrabold tracking-tight text-foreground">All Transactions</h1>
+            </div>
+        </header>
 
-<h2>📊 Expense History</h2>
+        <!-- Transactions List -->
+        <section class="space-y-3">
+            {% if expenses %}
+                <ul class="space-y-2.5">
+                    {% for t in expenses %}
+                    <li class="relative overflow-hidden rounded-3xl">
+                        <div class="relative flex items-center gap-3 bg-[var(--card)] p-4 shadow-card">
+                            
+                            <!-- Emoji Logic -->
+                            <div class="flex h-11 w-11 flex-none items-center justify-center rounded-2xl bg-secondary text-xl">
+                                {% if t.transaction_type == 'income' %}💸
+                                {% elif t.category == 'Food/Zomato' %}🍔
+                                {% elif t.category == 'College Canteen' %}🥪
+                                {% elif t.category == 'Outing' %}🎉
+                                {% elif t.category == 'Commute' %}🛺
+                                {% else %}✨{% endif %}
+                            </div>
 
-</div>
+                            <div class="min-w-0 flex-1">
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <span class="truncate text-sm font-semibold text-foreground">{{ t.category }}</span>
+                                    
+                                    <!-- Badges -->
+                                    {% if t.transaction_type != 'income' %}
+                                        {% if t.payment_method == 'UPI' %}
+                                            <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-badge-upi text-badge-upi-foreground">UPI</span>
+                                        {% else %}
+                                            <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-badge-cash text-badge-cash-foreground">Cash</span>
+                                        {% endif %}
+                                        {% if t.is_split %}
+                                            <span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-badge-shared text-badge-shared-foreground">Shared</span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                <p class="mt-0.5 text-xs text-muted-foreground">{{ t.date.strftime('%d %b %Y, %I:%M %p') }}</p>
+                                {% if t.notes %}
+                                    <p class="mt-1 text-xs italic text-muted-foreground">{{ t.notes }}</p>
+                                {% endif %}
+                            </div>
 
-<div class="container">
-
-<br>
-
-<a href="/dashboard" class="btn">
-← Back to Dashboard
-</a>
-
-<br><br>
-
-{% for expense in expenses %}
-
-<div class="record">
-
-    <div class="top">
-
-        <div>
-
-            <h3>{{ expense.date }}</h3>
-
-            <p>
-                Total Expense:
-                ₹{{ expense.total }}
-            </p>
-
-        </div>
-
-        <button
-            class="btn"
-            onclick="toggleDetails({{ expense.id }})">
-
-            View Details
-
-        </button>
-
+                            <!-- Amount -->
+                            <div class="text-right text-base font-bold {% if t.transaction_type == 'income' %}text-safe{% else %}text-expense{% endif %}">
+                                {% if t.transaction_type == 'income' %}+{% else %}−{% endif %}₹{{ t.amount }}
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="rounded-3xl border border-dashed border-[var(--border)] bg-secondary/30 p-8 text-center">
+                    <p class="text-sm text-muted-foreground">No transactions yet. Head back to the dashboard to log your first expense!</p>
+                </div>
+            {% endif %}
+        </section>
     </div>
 
-    <div
-        class="details"
-        id="details-{{ expense.id }}">
-
-        <div class="summary">
-
-            <div class="left">
-
-                <p><b>Food:</b> ₹{{ expense.food }}</p>
-
-                <p><b>Travel:</b> ₹{{ expense.travel }}</p>
-
-                <p><b>Shopping:</b> ₹{{ expense.shopping }}</p>
-
-                <p><b>Bills:</b> ₹{{ expense.bills }}</p>
-
-                <p><b>Entertainment:</b> ₹{{ expense.entertainment }}</p>
-
-                <p><b>Health:</b> ₹{{ expense.health }}</p>
-
-                <p><b>Education:</b> ₹{{ expense.education }}</p>
-
-                <hr>
-
-                <p>
-                    <b>Total:</b>
-                    ₹{{ expense.total }}
-                </p>
-
-                <p>
-                    <b>Average:</b>
-                    ₹{{ (expense.total / 7)|round(2) }}
-                </p>
-
-            </div>
-
-            <div class="right">
-
-                <h3>
-                    Donut Chart
-                    (Coming Next)
-                </h3>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-{% endfor %}
-
-</div>
-
-<script>
-
-function toggleDetails(id){
-
-    let details =
-        document.getElementById(
-            "details-" + id
-        );
-
-    if(details.style.display === "block"){
-
-        details.style.display = "none";
-
-    }
-
-    else{
-
-        details.style.display = "block";
-
-    }
-}
-
-</script>
-
-<script>
-
-window.onload = function(){
-
-    let theme = localStorage.getItem("theme");
-
-    if(theme === "dark"){
-        document.body.classList.add("dark");
-    }
-}
-
-</script>
-
+    <!-- Time of Day Engine -->
+    <script>
+        function updateTimeTheme() {
+            const h = new Date().getHours();
+            let tod = 'night';
+            if (h >= 6 && h < 12) { tod = 'morning'; }
+            else if (h >= 12 && h < 17) { tod = 'afternoon'; }
+            else if (h >= 17 && h < 20) { tod = 'evening'; }
+            document.documentElement.setAttribute('data-time', tod);
+        }
+        updateTimeTheme();
+        setInterval(updateTimeTheme, 60000);
+    </script>
 </body>
-
 </html>
